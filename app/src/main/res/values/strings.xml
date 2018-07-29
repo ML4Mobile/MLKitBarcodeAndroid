@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">AndroidCameraPreview</string>
 
-    <string name="err_permission_not_granted">앱 권한 승인이 필요합니다.</string>
+    <string name="err_permission_not_granted">Camera permission is needed.</string>
     <string name="title_activity_camera_preview">CameraPreviewActivity</string>
 
     <string name="result_isbn_not_detected">ISBN Not Detected</string>

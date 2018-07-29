@@ -15,9 +15,9 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    // 앱에서 필요한 권한 목록
+    // Permission List
     private String[] REQUEST_PERMISSIONS = new String[]{Manifest.permission.CAMERA};
-    // 권한승인 요청 코드
+    // Permission Request Code
     private int RESULT_PERMISSIONS = 0x9000;
 
     @Override
@@ -33,13 +33,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /** 카메라 프리뷰 화면으로 이동 */
+    /** Go to camera preview */
     private void startCameraPreviewActivity(){
-        Intent i = new Intent(this, CameraPreviewActivity.class);
-        startActivityForResult(i, CameraPreviewActivity.RESULT_OK);
+        startActivity(new Intent(this, CameraPreviewActivity.class));
     }
 
-    /** 퍼미션 권한요청 및 승인상태 확인 */
+    /** Request permission and check */
     private boolean isPermissionGranted(){
         int sdkVersion = Build.VERSION.SDK_INT;
         if(sdkVersion >= Build.VERSION_CODES.M) {
@@ -56,31 +55,19 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /** 퍼미션 권한요청 결과 처리 */
+    /** Post-process for granted permissions */
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         if (RESULT_PERMISSIONS == requestCode) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // 권한 허가시
+                // Permission granted
                 startCameraPreviewActivity();
             } else {
-                // 권한 거부시
+                // Rejected
                 Toast.makeText(this, R.string.err_permission_not_granted, Toast.LENGTH_SHORT).show();
             }
             return;
         }
 
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        TextView rsltView = findViewById(R.id.txt_isbn);
-        if(requestCode == CameraPreviewActivity.RESULT_OK && resultCode == CameraPreviewActivity.RESULT_OK) {
-            rsltView.setText("ISBN : "+data.getStringExtra("isbn"));
-        } else {
-            rsltView.setText(R.string.result_isbn_not_detected);
-        }
     }
 }

@@ -11,8 +11,8 @@ import java.util.List;
 /** Camera preview screen for portrait mode */
 public class CameraView  extends SurfaceView implements SurfaceHolder.Callback{
     // Camera configuration values
-    public static final int PREVIEW_WIDTH = 1920;
-    public static final int PREVIEW_HEIGHT = 1080;
+    public static final int PREVIEW_WIDTH = 1280;
+    public static final int PREVIEW_HEIGHT = 720;
     public static final int SCREEN_ORIENTATION = 90;
 
     // Preview display parameters (by portrait mode)
@@ -33,6 +33,10 @@ public class CameraView  extends SurfaceView implements SurfaceHolder.Callback{
 
     public void setPreviewCallback(Camera.PreviewCallback previewCallback) {
         mPreviewCallback=previewCallback;
+    }
+
+    public Camera.Size getPreviewSize() {
+        return mPreviewSize;
     }
 
     /** Calculate preview size to fit output screen */

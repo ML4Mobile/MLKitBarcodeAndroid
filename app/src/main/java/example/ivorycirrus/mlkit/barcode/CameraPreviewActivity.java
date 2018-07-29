@@ -1,8 +1,8 @@
 package example.ivorycirrus.mlkit.barcode;
 
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.ImageFormat;
+import android.graphics.Rect;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -26,7 +26,13 @@ import java.util.List;
 
 public class CameraPreviewActivity extends AppCompatActivity {
 
-    public static final int RESULT_OK = 9000;
+    private CameraView camView;
+    private OverlayView overlay;
+    private double overlayScale = -1;
+
+    private interface OnBarcodeListener {
+        void onIsbnDetected(FirebaseVisionBarcode barcode);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,25 +60,27 @@ public class CameraPreviewActivity extends AppCompatActivity {
 
         // Set-up preview screen
         if(cam != null) {
+            // Create overlay view
+            overlay = new OverlayView(this);
+
             // Create barcode processor for ISBN
             CustomPreviewCallback camCallback = new CustomPreviewCallback(CameraView.PREVIEW_WIDTH, CameraView.PREVIEW_HEIGHT);
             camCallback.setBarcodeDetectedListener(new OnBarcodeListener() {
                 @Override
                 public void onIsbnDetected(FirebaseVisionBarcode barcode) {
-                    Intent result = new Intent();
-                    result.putExtra("isbn", barcode.getRawValue());
-                    setResult(RESULT_OK, result);
-                    finish();
+                    overlay.setOverlay(fitOverlayRect(barcode.getBoundingBox()), barcode.getRawValue());
+                    overlay.invalidate();
                 }
             });
 
-            // Create view
-            CameraView camView = new CameraView(this, cam);
+            // Create camera preview
+            camView = new CameraView(this, cam);
             camView.setPreviewCallback(camCallback);
 
             // Add view to UI
             FrameLayout preview = findViewById(R.id.frm_preview);
             preview.addView(camView);
+            preview.addView(overlay);
         }
     }
 
@@ -100,8 +108,14 @@ public class CameraPreviewActivity extends AppCompatActivity {
         return c;
     }
 
-    private interface OnBarcodeListener {
-        void onIsbnDetected(FirebaseVisionBarcode barcode);
+    /** Calculate overlay scale factor */
+    private Rect fitOverlayRect(Rect r) {
+        if(overlayScale <= 0) {
+            Camera.Size prevSize = camView.getPreviewSize();
+            overlayScale = (double) overlay.getWidth()/(double)prevSize.height;
+        }
+
+        return new Rect((int)(r.left*overlayScale), (int)(r.top*overlayScale), (int)(r.right*overlayScale), (int)(r.bottom*overlayScale));
     }
 
     /** Post-processor for preview image streams */
