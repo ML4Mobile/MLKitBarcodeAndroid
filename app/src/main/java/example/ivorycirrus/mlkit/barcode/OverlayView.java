@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.View;
 
+/** Draw camera overlays of detected information */
 public class OverlayView extends View {
 
     private Rect mRect;
