@@ -6,7 +6,7 @@ Android barcode scanning app using [Google ML Kit](https://developers.google.com
 ## Key Features
 
 * Show camera preview of facing back camera
-* Detect ISBN barcode (EAN-13 format)
+* Detect [ISBN barcode represented EAN-13 format](https://www.activebarcode.com/codes/isbn.html) on backside of books
 * Display detected region and barcode value on preview screen
 
 
