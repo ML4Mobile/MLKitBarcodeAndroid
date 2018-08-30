@@ -30,6 +30,7 @@ import java.util.List;
  */
 public class CameraPreviewActivity extends AppCompatActivity {
 
+    private Camera mCamera;
     private CameraView camView;
     private OverlayView overlay;
     private double overlayScale = -1;
@@ -60,10 +61,10 @@ public class CameraPreviewActivity extends AppCompatActivity {
         });
 
         // Initialize Camera
-        Camera cam = getCameraInstance();
+        mCamera = getCameraInstance();
 
         // Set-up preview screen
-        if(cam != null) {
+        if(mCamera != null) {
             // Create overlay view
             overlay = new OverlayView(this);
 
@@ -78,7 +79,7 @@ public class CameraPreviewActivity extends AppCompatActivity {
             });
 
             // Create camera preview
-            camView = new CameraView(this, cam);
+            camView = new CameraView(this, mCamera);
             camView.setPreviewCallback(camCallback);
 
             // Add view to UI
@@ -86,6 +87,17 @@ public class CameraPreviewActivity extends AppCompatActivity {
             preview.addView(camView);
             preview.addView(overlay);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        try{
+            if(mCamera != null) mCamera.release();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        super.onDestroy();
     }
 
     /** Get facing back camera instance */
